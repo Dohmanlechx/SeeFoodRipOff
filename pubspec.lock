@@ -134,6 +134,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_3d_controller:
+    dependency: "direct main"
+    description:
+      name: flutter_3d_controller
+      sha256: "4c2ca198974a04b688e48c527b162229bd05a5d12f96f1e0913a49aee7d6d68b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -304,14 +312,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  model_viewer_plus:
-    dependency: "direct main"
-    description:
-      name: model_viewer_plus
-      sha256: daeee3c498ece539125933e233252aebdc0b6d842538efb7061f7eaf3b97939e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.7.0"
   path:
     dependency: transitive
     description:

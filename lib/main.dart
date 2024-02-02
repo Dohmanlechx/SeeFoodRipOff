@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:io' show Platform;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io' show Platform;
-
-import 'package:see_food/object_detection.dart';
-import 'package:see_food/octopus_recipes.dart';
-import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:see_food/hotdog.dart';
+import 'package:see_food/object_detection.dart';
 
 void main() => runApp(const MyApp());
 
@@ -66,53 +64,59 @@ class _SeeFoodState extends State<SeeFood> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Center(
-                child: (image != null)
-                    ? Image.memory(image!)
-                    : const SizedBox.shrink(),
-              ),
+        child: Stack(
+          children: [
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: Center(
+                    child: (image != null)
+                        ? Image.memory(image!)
+                        : const SizedBox.shrink(),
+                  ),
+                ),
+                Text(buildHotDogString(), style: const TextStyle(fontSize: 40)),
+
+                // Add Lottie animation here
+                Lottie.asset(
+                  'assets/lottie/spinner.json', // replace with your animation file
+                  width: 150,
+                  height: 150,
+                  repeat: true,
+                  reverse: false,
+                ),
+
+                SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (Platform.isAndroid || Platform.isIOS)
+                        IconButton(
+                          onPressed: () async {
+                            final result = await imagePicker.pickImage(
+                              source: ImageSource.camera,
+                            );
+
+                            if (result == null) return;
+                            final data =
+                                objectDetection!.analyseImage(result.path);
+
+                            setState(() {
+                              image = data.image;
+                              hotDog = data.isHotDog;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.camera,
+                            size: 64,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Text(buildHotDogString(), style: const TextStyle(fontSize: 40)),
-
-            // Add Lottie animation here
-            Lottie.asset(
-              'assets/lottie/spinner.json', // replace with your animation file
-              width: 150,
-              height: 150,
-              repeat: true,
-              reverse: false,
-            ),
-
-            SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  if (Platform.isAndroid || Platform.isIOS)
-                    IconButton(
-                      onPressed: () async {
-                        final result = await imagePicker.pickImage(
-                          source: ImageSource.camera,
-                        );
-
-                        if (result == null) return;
-                        final data = objectDetection!.analyseImage(result.path);
-
-                        setState(() {
-                          image = data.image;
-                          hotDog = data.isHotDog;
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.camera,
-                        size: 64,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            const Hotdog()
           ],
         ),
       ),
