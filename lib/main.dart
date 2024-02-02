@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:io' show Platform;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
-import 'package:see_food/hotdog.dart';
+import 'package:see_food/evaluating_screen.dart';
+import 'package:see_food/home_screen.dart';
+import 'package:see_food/hotdog_screen.dart';
+import 'package:see_food/not_hotdog_screen.dart';
 import 'package:see_food/object_detection.dart';
+import 'package:see_food/octopus_recipes.dart';
 
 void main() => runApp(const MyApp());
 
@@ -29,30 +31,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SeeFood(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'SeeFoodApp',
+      theme: ThemeData(fontFamily: 'Arial'),
+      home: const MyHome(),
     );
   }
 }
 
-class SeeFood extends StatefulWidget {
-  const SeeFood({super.key});
+class MyHome extends StatefulWidget {
+  const MyHome({super.key});
 
   @override
-  State<SeeFood> createState() => _SeeFoodState();
+  State<MyHome> createState() => _MyHomeState();
 }
 
-class _SeeFoodState extends State<SeeFood> {
+enum ScreenName { home, evaluating, result, octopus }
+
+class _MyHomeState extends State<MyHome> {
   final imagePicker = ImagePicker();
 
   ObjectDetection? objectDetection;
-  Uint8List? image;
-  bool? hotDog;
-
-  String buildHotDogString() {
-    if (hotDog == null) return "";
-    return hotDog == true ? "Hot Dog" : "Not Hot Dog";
-  }
+  ScreenName screen = ScreenName.home;
+  late Uint8List image;
+  bool homeStarted = false;
+  bool hotDog = false;
 
   @override
   void initState() {
@@ -60,65 +64,91 @@ class _SeeFoodState extends State<SeeFood> {
     objectDetection = ObjectDetection();
   }
 
+  void handleStartToggle() {
+    setState(() {
+      if (homeStarted == true) {
+        homeStarted = false;
+        image = Uint8List.fromList([]);
+        hotDog = false;
+        screen = ScreenName.home;
+      } else {
+        homeStarted = true;
+      }
+    });
+  }
+
+  Future<void> handlePhoto() async {
+    final result = await imagePicker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (result == null) return;
+    final imageBytes = await result.readAsBytes();
+    setState(() {
+      image = Uint8List.fromList(imageBytes);
+      screen = ScreenName.evaluating;
+    });
+    await Future.delayed(const Duration(seconds: 7));
+    final data = objectDetection!.analyseImage(result.path);
+    setState(() {
+      hotDog = data.isHotDog;
+      hotDog = false;
+      screen = ScreenName.result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                Expanded(
-                  child: Center(
-                    child: (image != null)
-                        ? Image.memory(image!)
-                        : const SizedBox.shrink(),
-                  ),
-                ),
-                Text(buildHotDogString(), style: const TextStyle(fontSize: 40)),
-
-                // Add Lottie animation here
-                Lottie.asset(
-                  'assets/lottie/spinner.json', // replace with your animation file
-                  width: 150,
-                  height: 150,
-                  repeat: true,
-                  reverse: false,
-                ),
-
-                SizedBox(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      if (Platform.isAndroid || Platform.isIOS)
-                        IconButton(
-                          onPressed: () async {
-                            final result = await imagePicker.pickImage(
-                              source: ImageSource.camera,
-                            );
-
-                            if (result == null) return;
-                            final data =
-                                objectDetection!.analyseImage(result.path);
-
-                            setState(() {
-                              image = data.image;
-                              hotDog = data.isHotDog;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.camera,
-                            size: 64,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const Hotdog()
-          ],
+    if (screen == ScreenName.home) {
+      return Scaffold(
+        body: SafeArea(
+          child: HomeScreen(
+            started: homeStarted,
+            onStart: handleStartToggle,
+            onPhoto: handlePhoto,
+          ),
         ),
+      );
+    }
+    if (screen == ScreenName.evaluating) {
+      return Scaffold(
+        body: SafeArea(
+          child: EvaluatingScreen(
+            image: image,
+          ),
+        ),
+      );
+    }
+    if (screen == ScreenName.result) {
+      if (hotDog == true) {
+        return Scaffold(
+          body: SafeArea(
+            child: HotdogScreen(
+              image: image,
+              onStart: handleStartToggle,
+            ),
+          ),
+        );
+      }
+      return Scaffold(
+        body: SafeArea(
+          child: NotHotdogScreen(
+            image: image,
+            onStart: handleStartToggle,
+          ),
+        ),
+      );
+    }
+    if (screen == ScreenName.octopus) {
+      return const Scaffold(
+        body: SafeArea(
+          child: OctopusRecipes(),
+        ),
+      );
+    }
+    return const Scaffold(
+      body: SafeArea(
+        child: SizedBox.shrink(),
       ),
     );
   }

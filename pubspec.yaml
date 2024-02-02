@@ -27,3 +27,15 @@ flutter:
     - assets/images/
     - assets/models/
     - assets/lottie/
+
+
+  fonts:
+    - family: Comic Sans
+      fonts:
+        - asset: fonts/comicsans.ttf
+    - family: Impact
+      fonts:
+        - asset: assets/fonts/impact.ttf
+    - family: Arial
+      fonts:
+        - asset: assets/fonts/ariblk.ttf
