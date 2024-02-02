@@ -40,7 +40,7 @@ flutter:
 
 
 icons_launcher:
-  image_path: "assets/images/hotdog.png"
+  image_path: "assets/images/store.png"
   platforms:
     android:
       enable: true
