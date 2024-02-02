@@ -164,7 +164,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         Opacity(
           opacity: _showHotdog ? 1 : 0,
-          child: Hotdog(hotdogController),
+          child: Hotdog(
+            hotdogController,
+            startAnimation: _showHotdog,
+          ),
         ),
         if (!widget.started)
           Positioned.fill(

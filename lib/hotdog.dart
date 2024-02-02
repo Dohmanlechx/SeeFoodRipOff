@@ -3,9 +3,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 
 class Hotdog extends StatefulWidget {
-  const Hotdog(this.controller, {super.key});
+  const Hotdog(this.controller, {required this.startAnimation, super.key});
 
   final Flutter3DController controller;
+  final bool startAnimation;
 
   @override
   State<Hotdog> createState() => _HotdogState();
@@ -13,11 +14,12 @@ class Hotdog extends StatefulWidget {
 
 class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
   late final Ticker ticker;
+  Ticker? ticker2;
 
   var value = 0.0;
-  var speed = 20.0;
-
-  var init = true;
+  static const maxSpeed = 25.0;
+  static const minSpeed = 4.0;
+  var speed = maxSpeed;
 
   @override
   void initState() {
@@ -31,14 +33,26 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
       );
     })
       ..start();
+  }
 
-    Future.delayed(const Duration(seconds: 2)).then((value) {
-      speed = 6.0;
-    });
+  @override
+  void didUpdateWidget(covariant Hotdog oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    Future.delayed(const Duration(seconds: 3)).then((value) {
-      speed = 2.0;
-    });
+    if (!oldWidget.startAnimation && widget.startAnimation) {
+      ticker2 = Ticker((elapsed) {
+        final percentage = (elapsed.inMilliseconds / 2000) * 100;
+
+        const diff = maxSpeed - minSpeed;
+        speed = maxSpeed - (diff * (percentage / 100));
+
+        if (percentage > 100) {
+          ticker2!.stop();
+          speed = minSpeed;
+        }
+      })
+        ..start();
+    }
   }
 
   @override
