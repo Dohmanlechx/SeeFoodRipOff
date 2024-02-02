@@ -63,20 +63,6 @@ class _SeeFoodState extends State<SeeFood> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const OctopusRecipes(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.read_more),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: Column(
           children: <Widget>[
