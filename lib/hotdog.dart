@@ -15,7 +15,7 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
   late final Ticker ticker;
 
   var value = 0.0;
-  final speed = 2.0;
+  var speed = 20.0;
 
   var init = true;
 
@@ -24,13 +24,21 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
     super.initState();
 
     ticker = createTicker((_) {
-      // widget.controller.setCameraOrbit(
-      //   value += speed,
-      //   60,
-      //   200,
-      // );
+      widget.controller.setCameraOrbit(
+        value += speed,
+        60,
+        200,
+      );
     })
       ..start();
+
+    Future.delayed(const Duration(seconds: 2)).then((value) {
+      speed = 6.0;
+    });
+
+    Future.delayed(const Duration(seconds: 3)).then((value) {
+      speed = 2.0;
+    });
   }
 
   @override
@@ -41,9 +49,7 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    const path = 'assets/models/hotdog3.glb';
-
-    print("rebulkd");
+    const path = 'assets/models/hotdog4.glb';
 
     return Flutter3DViewer(
       src: path,

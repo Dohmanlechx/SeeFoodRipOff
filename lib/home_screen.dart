@@ -32,13 +32,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     _translateController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 750),
     );
 
     _translateAnimation = Tween<double>(
       begin: 20,
       end: 0,
-    ).animate(_translateController);
+    ).animate(CurvedAnimation(
+        parent: _translateController, curve: Curves.easeOutBack));
 
     _translateController.addListener(() {
       setState(() {
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       });
     });
 
-    Future.delayed(const Duration(seconds: 2)).then((value) {
+    Future.delayed(const Duration(seconds: 1)).then((value) {
       _showHotdog = true;
       _translateController.forward();
     });
