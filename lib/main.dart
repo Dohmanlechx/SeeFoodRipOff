@@ -20,6 +20,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io' show Platform;
 
 import 'package:see_food/object_detection.dart';
+import 'package:see_food/octopus_recipes.dart';
 
 void main() => runApp(const MyApp());
 
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home:  SeeFood(),
+      home: SeeFood(),
     );
   }
 }
@@ -49,7 +50,7 @@ class _SeeFoodState extends State<SeeFood> {
   bool? hotDog;
 
   String buildHotDogString() {
-    if(hotDog == null) return "";
+    if (hotDog == null) return "";
     return hotDog == true ? "Hot Dog" : "Not Hot Dog";
   }
 
@@ -62,16 +63,31 @@ class _SeeFoodState extends State<SeeFood> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const OctopusRecipes(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.read_more),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: <Widget>[
             Expanded(
               child: Center(
-                child: (image != null) ? Image.memory(image!) : const SizedBox.shrink(),
+                child: (image != null)
+                    ? Image.memory(image!)
+                    : const SizedBox.shrink(),
               ),
             ),
             Text(buildHotDogString(), style: const TextStyle(fontSize: 40)),
-            
             SizedBox(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -83,7 +99,7 @@ class _SeeFoodState extends State<SeeFood> {
                           source: ImageSource.camera,
                         );
 
-                        if (result == null) return ;
+                        if (result == null) return;
                         final data = objectDetection!.analyseImage(result.path);
 
                         setState(() {

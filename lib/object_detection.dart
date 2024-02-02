@@ -22,7 +22,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 
 class ObjectDetection {
   static const String _modelPath = 'assets/models/ssd_mobilenet.tflite';
-  static const String _labelPath = 'assets/models/ssd_mobilenet.txt';
+  static const String _labelPath = 'assets/models/labelmap.txt';
 
   Interpreter? _interpreter;
   List<String>? _labels;
