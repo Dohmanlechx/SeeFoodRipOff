@@ -26,4 +26,8 @@ flutter:
     - assets/images/
     - assets/models/
     - assets/lottie/
+  fonts:
+    - family: Comic Sans
+      fonts:
+        - asset: fonts/comicsans.ttf
  
