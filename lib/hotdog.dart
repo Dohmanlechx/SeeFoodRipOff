@@ -17,22 +17,13 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
   Ticker? ticker2;
 
   var value = 0.0;
-  static const maxSpeed = 25.0;
+  static const maxSpeed = 20.0;
   static const minSpeed = 3.0;
   var speed = maxSpeed;
 
   @override
   void initState() {
     super.initState();
-
-    ticker = createTicker((_) {
-      widget.controller.setCameraOrbit(
-        value += speed,
-        60,
-        200,
-      );
-    })
-      ..start();
   }
 
   @override
@@ -40,6 +31,15 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
     super.didUpdateWidget(oldWidget);
 
     if (!oldWidget.startAnimation && widget.startAnimation) {
+      ticker = createTicker((_) {
+        widget.controller.setCameraOrbit(
+          value += speed,
+          60,
+          200,
+        );
+      })
+        ..start();
+
       ticker2 = Ticker((elapsed) {
         final percentage = (elapsed.inMilliseconds / 2000) * 100;
 
@@ -65,9 +65,13 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     const path = 'assets/models/hotdog.glb';
 
-    return Flutter3DViewer(
-      src: path,
-      controller: widget.controller,
+    // Opacity is a hack, as it seems like we can't set an initial camera position
+    return Opacity(
+      opacity: 1, // widget.startAnimation ? 1 : 0,
+      child: Flutter3DViewer(
+        src: path,
+        controller: widget.controller,
+      ),
     );
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_3d_controller/flutter_3d_controller.dart';
-import 'package:see_food/hotdog.dart';
 import 'package:see_food/octopus_recipes.dart';
 import 'package:see_food/text_outline.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   final bool started;
   final VoidCallback onStart;
   final Future<void> Function() onPhoto;
@@ -15,44 +13,6 @@ class HomeScreen extends StatefulWidget {
     required this.onStart,
     required this.onPhoto,
   });
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  final Flutter3DController hotdogController = Flutter3DController();
-
-  late final AnimationController _translateController;
-  late final Animation<double> _translateAnimation;
-  var _showHotdog = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _translateController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 750),
-    );
-
-    _translateAnimation = Tween<double>(
-      begin: 20,
-      end: 0,
-    ).animate(CurvedAnimation(
-        parent: _translateController, curve: Curves.easeOutBack));
-
-    _translateController.addListener(() {
-      setState(() {
-        hotdogController.setCameraTarget(0.0, _translateAnimation.value, 0.0);
-      });
-    });
-
-    Future.delayed(const Duration(seconds: 1)).then((value) {
-      _showHotdog = true;
-      _translateController.forward();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +64,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  if (!widget.started)
+                  if (!started)
                     Container(
                       color: Colors.black
                           .withOpacity(0.5), // Adjust opacity as needed
                     ),
-                  if (!widget.started)
+                  if (!started)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.only(
@@ -123,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         outlineThickness: 1.5,
                       ),
                     ),
-                  if (widget.started)
+                  if (started)
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -141,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               InkWell(
-                                onTap: widget.onPhoto,
+                                onTap: onPhoto,
                                 child: Image.asset(
                                   'assets/images/button.png',
                                   width: 100.0,
@@ -170,22 +130,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
-        // Opacity is a hack, as it seems like we can't set an initial camera position
-        Opacity(
-          opacity: _showHotdog ? 1 : 0,
-          child: Hotdog(
-            hotdogController,
-            startAnimation: _showHotdog,
-          ),
-        ),
-        if (!widget.started)
+        if (!started)
           Positioned.fill(
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
               ),
-              onPressed: widget.onStart,
+              onPressed: onStart,
               child: const Text(
                 '',
                 style: TextStyle(
