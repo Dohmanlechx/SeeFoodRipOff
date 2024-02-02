@@ -18,7 +18,7 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
 
   var value = 0.0;
   static const maxSpeed = 25.0;
-  static const minSpeed = 4.0;
+  static const minSpeed = 3.0;
   var speed = maxSpeed;
 
   @override
@@ -63,7 +63,7 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    const path = 'assets/models/hotdog4.glb';
+    const path = 'assets/models/hotdog.glb';
 
     return Flutter3DViewer(
       src: path,

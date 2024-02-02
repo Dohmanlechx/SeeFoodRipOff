@@ -162,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
+        // Opacity is a hack, as it seems like we can't set an initial camera position
         Opacity(
           opacity: _showHotdog ? 1 : 0,
           child: Hotdog(
