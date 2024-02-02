@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:see_food/hotdog.dart';
+import 'package:see_food/octopus_recipes.dart';
 import 'package:see_food/text_outline.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -64,12 +65,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               decoration: const BoxDecoration(
                 color: Colors.red,
               ),
-              child: const TextOutline(
-                text: 'SEEFOOD',
-                textColor: Colors.white,
-                fontSize: 96.0,
-                outlineColor: Colors.black,
-                outlineThickness: 4,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const OctopusRecipes(),
+                  ),
+                ),
+                child: const TextOutline(
+                  text: 'SEEFOOD',
+                  textColor: Colors.white,
+                  fontSize: 60.0,
+                  outlineColor: Colors.black,
+                  outlineThickness: 4,
+                ),
               ),
             ),
             Container(
@@ -80,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: TextOutline(
                 text: '“The Shazam for Food”',
                 textColor: Colors.red,
-                fontSize: 32.0,
+                fontSize: 28.0,
                 outlineColor: Colors.black.withOpacity(0.5),
                 outlineThickness: 1,
               ),

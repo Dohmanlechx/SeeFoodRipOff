@@ -84,71 +84,56 @@ class _MyHomeState extends State<MyHome> {
 
     if (result == null) return;
     final imageBytes = await result.readAsBytes();
+
     setState(() {
       image = Uint8List.fromList(imageBytes);
       screen = ScreenName.evaluating;
     });
-    await Future.delayed(const Duration(seconds: 7));
+
+    await Future.delayed(const Duration(seconds: 2));
     final data = objectDetection!.analyseImage(result.path);
+
     setState(() {
       hotDog = data.isHotDog;
-      hotDog = false;
       screen = ScreenName.result;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (screen == ScreenName.home) {
-      return Scaffold(
-        body: SafeArea(
-          child: HomeScreen(
-            started: homeStarted,
-            onStart: handleStartToggle,
-            onPhoto: handlePhoto,
-          ),
-        ),
-      );
-    }
-    if (screen == ScreenName.evaluating) {
-      return Scaffold(
-        body: SafeArea(
-          child: EvaluatingScreen(
-            image: image,
-          ),
-        ),
-      );
-    }
-    if (screen == ScreenName.result) {
-      if (hotDog == true) {
-        return Scaffold(
-          body: SafeArea(
-            child: HotdogScreen(
-              image: image,
-              onStart: handleStartToggle,
-            ),
-          ),
-        );
-      }
-      return Scaffold(
-        body: SafeArea(
-          child: NotHotdogScreen(
-            image: image,
-            onStart: handleStartToggle,
-          ),
-        ),
-      );
-    }
-    if (screen == ScreenName.octopus) {
-      return const Scaffold(
-        body: SafeArea(
-          child: OctopusRecipes(),
-        ),
-      );
-    }
-    return const Scaffold(
+    return Scaffold(
+      backgroundColor: hotDog ? Colors.green : Colors.red,
       body: SafeArea(
-        child: SizedBox.shrink(),
+        child: Builder(
+          builder: (context) {
+            if (screen == ScreenName.home) {
+              return HomeScreen(
+                started: homeStarted,
+                onStart: handleStartToggle,
+                onPhoto: handlePhoto,
+              );
+            }
+            if (screen == ScreenName.evaluating) {
+              return EvaluatingScreen(
+                image: image,
+              );
+            }
+            if (screen == ScreenName.result) {
+              if (hotDog == true) {
+                return HotdogScreen(
+                  image: image,
+                  onStart: handleStartToggle,
+                );
+              }
+              return NotHotdogScreen(
+                image: image,
+                onStart: handleStartToggle,
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }

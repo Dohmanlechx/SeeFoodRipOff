@@ -19,6 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  icons_launcher: ^2.1.7
 
 
 flutter:
@@ -39,3 +40,12 @@ flutter:
     - family: Arial
       fonts:
         - asset: assets/fonts/ariblk.ttf
+
+
+icons_launcher:
+  image_path: "assets/images/store.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
