@@ -12,6 +12,7 @@ dependencies:
   tflite_flutter: ^0.10.4
   image_picker: ^0.8.8
   image: ^4.0.17
+  lottie: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -24,4 +25,5 @@ flutter:
   assets:
     - assets/images/
     - assets/models/
+    - assets/lottie/
  

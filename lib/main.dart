@@ -21,6 +21,8 @@ import 'dart:io' show Platform;
 
 import 'package:see_food/object_detection.dart';
 import 'package:see_food/octopus_recipes.dart';
+import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 void main() => runApp(const MyApp());
 
@@ -74,6 +76,16 @@ class _SeeFoodState extends State<SeeFood> {
               ),
             ),
             Text(buildHotDogString(), style: const TextStyle(fontSize: 40)),
+
+            // Add Lottie animation here
+            Lottie.asset(
+              'assets/lottie/spinner.json', // replace with your animation file
+              width: 150,
+              height: 150,
+              repeat: true,
+              reverse: false,
+            ),
+
             SizedBox(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
