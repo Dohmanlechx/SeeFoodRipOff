@@ -3,32 +3,32 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 
 class Hotdog extends StatefulWidget {
-  const Hotdog({super.key});
+  const Hotdog(this.controller, {super.key});
+
+  final Flutter3DController controller;
 
   @override
   State<Hotdog> createState() => _HotdogState();
 }
 
-class _HotdogState extends State<Hotdog> with SingleTickerProviderStateMixin {
+class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
   late final Ticker ticker;
 
   var value = 0.0;
   final speed = 2.0;
 
-  final Flutter3DController hotdogController = Flutter3DController();
+  var init = true;
 
   @override
   void initState() {
     super.initState();
 
     ticker = createTicker((_) {
-      setState(() {
-        hotdogController.setCameraOrbit(
-          value += speed,
-          60,
-          120,
-        );
-      });
+      // widget.controller.setCameraOrbit(
+      //   value += speed,
+      //   60,
+      //   200,
+      // );
     })
       ..start();
   }
@@ -41,11 +41,13 @@ class _HotdogState extends State<Hotdog> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    const path = 'assets/models/hotdog.glb';
+    const path = 'assets/models/hotdog3.glb';
+
+    print("rebulkd");
 
     return Flutter3DViewer(
       src: path,
-      controller: hotdogController,
+      controller: widget.controller,
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_3d_controller/flutter_3d_controller.dart';
+import 'package:see_food/hotdog.dart';
 import 'package:see_food/text_outline.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final bool started;
   final VoidCallback onStart;
   final Future<void> Function() onPhoto;
@@ -12,6 +14,43 @@ class HomeScreen extends StatelessWidget {
     required this.onStart,
     required this.onPhoto,
   });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  final Flutter3DController hotdogController = Flutter3DController();
+
+  late final AnimationController _translateController;
+  late final Animation<double> _translateAnimation;
+  var _showHotdog = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _translateController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _translateAnimation = Tween<double>(
+      begin: 20,
+      end: 0,
+    ).animate(_translateController);
+
+    _translateController.addListener(() {
+      setState(() {
+        hotdogController.setCameraTarget(0.0, _translateAnimation.value, 0.0);
+      });
+    });
+
+    Future.delayed(const Duration(seconds: 2)).then((value) {
+      _showHotdog = true;
+      _translateController.forward();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +95,12 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (!started)
+                  if (!widget.started)
                     Container(
                       color: Colors.black
                           .withOpacity(0.5), // Adjust opacity as needed
                     ),
-                  if (!started)
+                  if (!widget.started)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.only(
@@ -75,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                         outlineThickness: 1.5,
                       ),
                     ),
-                  if (started)
+                  if (widget.started)
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -93,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               InkWell(
-                                onTap: onPhoto,
+                                onTap: widget.onPhoto,
                                 child: Image.asset(
                                   'assets/images/button.png',
                                   width: 100.0,
@@ -122,14 +161,18 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        if (!started)
+        Opacity(
+          opacity: _showHotdog ? 1 : 0,
+          child: Hotdog(hotdogController),
+        ),
+        if (!widget.started)
           Positioned.fill(
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
               ),
-              onPressed: onStart,
+              onPressed: widget.onStart,
               child: const Text(
                 '',
                 style: TextStyle(
