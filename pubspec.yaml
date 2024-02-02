@@ -66,6 +66,14 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
+  fonts:
+    - family: Impact
+      fonts:
+        - asset: assets/fonts/impact.ttf
+    - family: Arial
+      fonts:
+        - asset: assets/fonts/ariblk.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

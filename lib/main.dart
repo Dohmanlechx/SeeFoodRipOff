@@ -1,24 +1,11 @@
-/*
- * Copyright 2023 The TensorFlow Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *             http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:object_detection_ssd_mobilenet/home_screen.dart';
+import 'package:object_detection_ssd_mobilenet/evaluating_screen.dart';
+import 'package:object_detection_ssd_mobilenet/hotdog_screen.dart';
+import 'package:object_detection_ssd_mobilenet/not_hotdog_screen.dart';
 import 'package:object_detection_ssd_mobilenet/object_detection.dart';
-import 'dart:io' show Platform;
 
 void main() => runApp(const MyApp());
 
@@ -27,30 +14,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home:  SeeFood(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'SeeFoodApp',
+      theme: ThemeData(fontFamily: 'Arial'),
+      home: const MyHome(),
     );
   }
 }
 
-class SeeFood extends StatefulWidget {
-  const SeeFood({super.key});
+class MyHome extends StatefulWidget {
+  const MyHome({super.key});
 
   @override
-  State<SeeFood> createState() => _SeeFoodState();
+  State<MyHome> createState() => _MyHomeState();
 }
 
-class _SeeFoodState extends State<SeeFood> {
+enum ScreenName { home, evaluating, result }
+
+class _MyHomeState extends State<MyHome> {
   final imagePicker = ImagePicker();
 
+  ScreenName screen = ScreenName.home;
+  bool homeStarted = false;
   ObjectDetection? objectDetection;
-  Uint8List? image;
-  bool? hotDog;
-
-  String buildHotDogString() {
-    if(hotDog == null) return "";
-    return hotDog == true ? "Hot Dog" : "Not Hot Dog";
-  }
+  late Uint8List image;
+  bool hotDog = false;
 
   @override
   void initState() {
@@ -58,49 +47,88 @@ class _SeeFoodState extends State<SeeFood> {
     objectDetection = ObjectDetection();
   }
 
+  void handleStartToggle() {
+    setState(() {
+      if (homeStarted == true) {
+        homeStarted = false;
+        image = Uint8List.fromList([]);
+        hotDog = false;
+        screen = ScreenName.home;
+      }
+      else {
+        homeStarted = true;
+      }
+    });
+  }
+
+  Future<void> handlePhoto() async {
+    final result = await imagePicker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (result == null) return;
+    final imageBytes = await result.readAsBytes();
+    setState(() {
+      image  = Uint8List.fromList(imageBytes);
+      screen = ScreenName.evaluating;
+    });
+    await Future.delayed(const Duration(seconds: 7));
+    final data = objectDetection!.analyseImage(result.path);
+    setState(() {
+      hotDog = data.isHotDog;
+      screen = ScreenName.result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Center(
-                child: (image != null) ? Image.memory(image!) : const SizedBox.shrink(),
-              ),
-            ),
-            Text(buildHotDogString(), style: const TextStyle(fontSize: 40)),
-            
-            SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  if (Platform.isAndroid || Platform.isIOS)
-                    IconButton(
-                      onPressed: () async {
-                        final result = await imagePicker.pickImage(
-                          source: ImageSource.camera,
-                        );
-
-                        if (result == null) return ;
-                        final data = objectDetection!.analyseImage(result.path);
-
-                        setState(() {
-                          image = data.image;
-                          hotDog = data.isHotDog;
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.camera,
-                        size: 64,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
+    if (screen == ScreenName.home) {
+      return Scaffold(
+        body: SafeArea(
+          child: HomeScreen(
+            started: homeStarted,
+            onStart: handleStartToggle,
+            onPhoto: handlePhoto,
+          ),
         ),
+      );
+    }
+    if (screen == ScreenName.evaluating) {
+      return Scaffold(
+        body: SafeArea(
+          child: EvaluatingScreen(
+            image: image,
+          ),
+        ),
+      );
+    }
+    if (screen == ScreenName.result) {
+      if (hotDog == true) {
+        return Scaffold(
+          body: SafeArea(
+            child: HotdogScreen(
+              image: image,
+              onStart: handleStartToggle,
+            ),
+          ),
+        );
+      }
+      return Scaffold(
+        body: SafeArea(
+          child: NotHotdogScreen(
+            image: image,
+            onStart: handleStartToggle,
+          ),
+        ),
+      );
+    }
+    return const Scaffold(
+      body: SafeArea(
+        child: SizedBox.shrink(),
       ),
     );
   }
 }
+
+
+
