@@ -17,12 +17,12 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
-import 'package:object_detection_ssd_mobilenet/result.dart';
+import 'package:see_food/result.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 class ObjectDetection {
   static const String _modelPath = 'assets/models/ssd_mobilenet.tflite';
-  static const String _labelPath = 'assets/models/ssd_mobilenet.txt';
+  static const String _labelPath = 'assets/models/labelmap.txt';
 
   Interpreter? _interpreter;
   List<String>? _labels;

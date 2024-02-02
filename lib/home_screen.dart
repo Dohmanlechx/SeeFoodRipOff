@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:object_detection_ssd_mobilenet/text_outline.dart';
+import 'package:see_food/text_outline.dart';
 
 class HomeScreen extends StatelessWidget {
   final bool started;

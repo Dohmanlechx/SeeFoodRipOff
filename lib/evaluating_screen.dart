@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:object_detection_ssd_mobilenet/text_outline.dart';
+import 'package:lottie/lottie.dart';
+import 'package:see_food/text_outline.dart';
 
 class EvaluatingScreen extends StatelessWidget {
   final Uint8List image;
@@ -27,10 +28,17 @@ class EvaluatingScreen extends StatelessWidget {
             color: Colors.grey.withOpacity(0.80), // Adjust opacity as needed
           ),
         ),
-        const Center(
-          child: Stack(
+        Center(
+          child: Column(
             children: [
-              TextOutline(
+              Lottie.asset(
+                'assets/lottie/spinner.json',
+                width: 150,
+                height: 150,
+                repeat: true,
+                reverse: false,
+              ),
+              const TextOutline(
                 text: 'Evaluating...',
                 textColor: Colors.white,
                 fontSize: 32,
