@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
               child: TextOutline(
                 text: '“The Shazam for Food”',
                 textColor: Colors.red,
-                fontSize: 32.0,
+                fontSize: 28.0,
                 outlineColor: Colors.black.withOpacity(0.5),
                 outlineThickness: 1,
               ),
