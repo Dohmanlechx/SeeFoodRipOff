@@ -1,13 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:see_food/hotdog.dart';
 
 class HotdogScreen extends StatefulWidget {
   final VoidCallback onStart;
+  final Uint8List image;
 
   const HotdogScreen({
     super.key,
     required this.onStart,
+    required this.image,
   });
 
   @override
@@ -55,9 +59,9 @@ class _HotdogScreenState extends State<HotdogScreen>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Positioned.fill(
-        //   child: Image.memory(widget.image, fit: BoxFit.cover),
-        // ),
+        Positioned.fill(
+          child: Image.memory(widget.image, fit: BoxFit.cover),
+        ),
         Positioned(
           top: 0,
           left: 0,
@@ -82,7 +86,6 @@ class _HotdogScreenState extends State<HotdogScreen>
             ),
           ),
         ),
-
         Hotdog(
           hotdogController,
           startAnimation: _showHotdog,

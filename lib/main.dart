@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:see_food/evaluating_screen.dart';
+import 'package:see_food/home_screen.dart';
 import 'package:see_food/hotdog_screen.dart';
+import 'package:see_food/not_hotdog_screen.dart';
 import 'package:see_food/object_detection.dart';
+import 'package:see_food/octopus_recipes.dart';
 
 void main() => runApp(const MyApp());
 
@@ -44,12 +50,11 @@ class MyHome extends StatefulWidget {
 enum ScreenName { home, evaluating, result, octopus }
 
 class _MyHomeState extends State<MyHome> {
-  var init = true;
   final imagePicker = ImagePicker();
 
   ObjectDetection? objectDetection;
   ScreenName screen = ScreenName.home;
-  // late Uint8List image;
+  late Uint8List image;
   bool homeStarted = false;
   bool hotDog = false;
 
@@ -57,25 +62,19 @@ class _MyHomeState extends State<MyHome> {
   void initState() {
     super.initState();
     objectDetection = ObjectDetection();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        init = false;
-      });
-    });
   }
 
   void handleStartToggle() {
-    // setState(() {
-    //   if (homeStarted == true) {
-    //     homeStarted = false;
-    //     image = Uint8List.fromList([]);
-    //     hotDog = false;
-    //     screen = ScreenName.home;
-    //   } else {
-    //     homeStarted = true;
-    //   }
-    // });
+    setState(() {
+      if (homeStarted == true) {
+        homeStarted = false;
+        image = Uint8List.fromList([]);
+        hotDog = false;
+        screen = ScreenName.home;
+      } else {
+        homeStarted = true;
+      }
+    });
   }
 
   Future<void> handlePhoto() async {
@@ -86,10 +85,10 @@ class _MyHomeState extends State<MyHome> {
     if (result == null) return;
     final imageBytes = await result.readAsBytes();
 
-    // setState(() {
-    //   image = Uint8List.fromList(imageBytes);
-    //   screen = ScreenName.evaluating;
-    // });
+    setState(() {
+      image = Uint8List.fromList(imageBytes);
+      screen = ScreenName.evaluating;
+    });
 
     await Future.delayed(const Duration(seconds: 2));
     final data = objectDetection!.analyseImage(result.path);
@@ -107,36 +106,31 @@ class _MyHomeState extends State<MyHome> {
       body: SafeArea(
         child: Builder(
           builder: (context) {
-            if (!init) {
-              return HotdogScreen(
+            if (screen == ScreenName.home) {
+              return HomeScreen(
+                started: homeStarted,
+                onStart: handleStartToggle,
+                onPhoto: handlePhoto,
+              );
+            }
+            if (screen == ScreenName.evaluating) {
+              print("Evaluating");
+              return EvaluatingScreen(
+                image: image,
+              );
+            }
+            if (screen == ScreenName.result) {
+              if (hotDog == true) {
+                return HotdogScreen(
+                  image: image,
+                  onStart: handleStartToggle,
+                );
+              }
+              return NotHotdogScreen(
+                image: image,
                 onStart: handleStartToggle,
               );
             }
-
-            // if (screen == ScreenName.home) {
-            //   return HomeScreen(
-            //     started: homeStarted,
-            //     onStart: handleStartToggle,
-            //     onPhoto: handlePhoto,
-            //   );
-            // }
-            // if (screen == ScreenName.evaluating) {
-            //   return EvaluatingScreen(
-            //     image: image,
-            //   );
-            // }
-            // if (screen == ScreenName.result) {
-            //   if (hotDog == true) {
-            //     return HotdogScreen(
-            //       image: image,
-            //       onStart: handleStartToggle,
-            //     );
-            //   }
-            //   return NotHotdogScreen(
-            //     image: image,
-            //     onStart: handleStartToggle,
-            //   );
-            // }
 
             return const SizedBox.shrink();
           },

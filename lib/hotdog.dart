@@ -13,6 +13,9 @@ class Hotdog extends StatefulWidget {
 }
 
 class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
+  late final AnimationController _translateController;
+  late final Animation<double> _translateAnimation;
+
   late final Ticker ticker;
   Ticker? ticker2;
 
@@ -31,6 +34,17 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
     super.didUpdateWidget(oldWidget);
 
     if (!oldWidget.startAnimation && widget.startAnimation) {
+      _translateController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 1500),
+      );
+
+      _translateAnimation = Tween<double>(
+        begin: 500.0,
+        end: 0,
+      ).animate(
+          CurvedAnimation(parent: _translateController, curve: Curves.linear));
+
       ticker = createTicker((_) {
         widget.controller.setCameraOrbit(
           value += speed,
@@ -52,6 +66,8 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
         }
       })
         ..start();
+
+      _translateController.forward();
     }
   }
 
@@ -66,12 +82,21 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
     const path = 'assets/models/hotdog.glb';
 
     // Opacity is a hack, as it seems like we can't set an initial camera position
-    return Opacity(
-      opacity: 1, // widget.startAnimation ? 1 : 0,
-      child: Flutter3DViewer(
-        src: path,
-        controller: widget.controller,
-      ),
+    return AnimatedBuilder(
+      animation: _translateAnimation,
+      builder: (_, __) {
+        print(_translateAnimation.value);
+        return Transform.translate(
+          offset: Offset(0, _translateAnimation.value),
+          child: Opacity(
+            opacity: 1, // widget.startAnimation ? 1 : 0,
+            child: Flutter3DViewer(
+              src: path,
+              controller: widget.controller,
+            ),
+          ),
+        );
+      },
     );
   }
 }
