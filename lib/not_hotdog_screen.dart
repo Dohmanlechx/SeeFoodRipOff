@@ -18,6 +18,15 @@ class NotHotdogScreen extends StatelessWidget {
         Positioned.fill(
           child: Image.memory(image, fit: BoxFit.cover),
         ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Image.asset(
+            'images/not_hotdog.png',
+            fit: BoxFit.cover,
+          ),
+        ),
         Positioned.fill(
           child: TextButton(
             style: TextButton.styleFrom(

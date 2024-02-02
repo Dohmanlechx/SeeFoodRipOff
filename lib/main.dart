@@ -6,7 +6,7 @@ import 'package:see_food/evaluating_screen.dart';
 import 'package:see_food/hotdog_screen.dart';
 import 'package:see_food/not_hotdog_screen.dart';
 import 'package:see_food/octopus_recipes.dart';
-// import 'package:see_food/object_detection.dart';
+import 'package:see_food/object_detection.dart';
 
 void main() => runApp(const MyApp());
 
@@ -36,7 +36,7 @@ enum ScreenName { home, evaluating, result, octopus }
 class _MyHomeState extends State<MyHome> {
   final imagePicker = ImagePicker();
 
-  // ObjectDetection? objectDetection;
+  ObjectDetection? objectDetection;
   ScreenName screen = ScreenName.home;
   late Uint8List image;
   bool homeStarted = false;
@@ -45,7 +45,7 @@ class _MyHomeState extends State<MyHome> {
   @override
   void initState() {
     super.initState();
-    // objectDetection = ObjectDetection();
+    objectDetection = ObjectDetection();
   }
 
   void handleStartToggle() {
@@ -74,10 +74,10 @@ class _MyHomeState extends State<MyHome> {
       screen = ScreenName.evaluating;
     });
     await Future.delayed(const Duration(seconds: 7));
-    // final data = objectDetection!.analyseImage(result.path);
+    final data = objectDetection!.analyseImage(result.path);
     setState(() {
-      // hotDog = data.isHotDog;
-      hotDog = true;
+      hotDog = data.isHotDog;
+      hotDog = false;
       screen = ScreenName.result;
     });
   }
