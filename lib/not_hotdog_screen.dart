@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class NotHotdogScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class NotHotdogScreen extends StatelessWidget {
           left: 0,
           right: 0,
           child: Image.asset(
-            'images/not_hotdog.png',
+            'assets/images/not_hotdog.png',
             fit: BoxFit.cover,
           ),
         ),
