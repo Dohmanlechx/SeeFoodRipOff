@@ -23,7 +23,7 @@ class HotdogScreen extends StatelessWidget {
           left: 0,
           right: 0,
           child: Image.asset(
-            'images/hotdog.png',
+            'assets/images/hotdog.png',
             fit: BoxFit.cover,
           ),
         ),
