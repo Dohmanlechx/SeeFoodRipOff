@@ -71,6 +71,10 @@ class _HotdogScreenState extends State<HotdogScreen>
             fit: BoxFit.cover,
           ),
         ),
+        Hotdog(
+          hotdogController,
+          startAnimation: _showHotdog,
+        ),
         Positioned.fill(
           child: TextButton(
             style: TextButton.styleFrom(
@@ -85,10 +89,6 @@ class _HotdogScreenState extends State<HotdogScreen>
               ),
             ),
           ),
-        ),
-        Hotdog(
-          hotdogController,
-          startAnimation: _showHotdog,
         ),
       ],
     );
