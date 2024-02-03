@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_3d_controller/flutter_3d_controller.dart';
+import 'package:see_food/not_hotdog.dart';
 
 class NotHotdogScreen extends StatelessWidget {
   final Uint8List image;
@@ -41,6 +43,12 @@ class NotHotdogScreen extends StatelessWidget {
                 color: Colors.transparent,
               ),
             ),
+          ),
+        ),
+        Positioned.fill(
+          child: NotHotdog(
+            Flutter3DController(),
+            startAnimation: false,
           ),
         ),
       ],

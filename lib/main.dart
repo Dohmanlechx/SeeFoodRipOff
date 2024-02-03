@@ -81,7 +81,7 @@ class _MyHomeState extends State<MyHome> {
   Future<void> handlePhoto() async {
     if (skipCameraForTesting) {
       image = Uint8List.fromList([]);
-      setResult(true);
+      setResult(false);
       return;
     }
 

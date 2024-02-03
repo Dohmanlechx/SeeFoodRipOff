@@ -74,6 +74,7 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
   @override
   void dispose() {
     ticker.dispose();
+    _translateController.dispose();
     super.dispose();
   }
 
