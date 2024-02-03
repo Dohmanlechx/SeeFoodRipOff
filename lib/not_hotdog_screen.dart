@@ -31,6 +31,12 @@ class NotHotdogScreen extends StatelessWidget {
           ),
         ),
         Positioned.fill(
+          child: NotHotdog(
+            Flutter3DController(),
+            startAnimation: false,
+          ),
+        ),
+        Positioned.fill(
           child: TextButton(
             style: TextButton.styleFrom(
               foregroundColor: Colors.transparent,
@@ -43,12 +49,6 @@ class NotHotdogScreen extends StatelessWidget {
                 color: Colors.transparent,
               ),
             ),
-          ),
-        ),
-        Positioned.fill(
-          child: NotHotdog(
-            Flutter3DController(),
-            startAnimation: false,
           ),
         ),
       ],
