@@ -18,7 +18,7 @@ class OctopusRecipes extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: const Text(
-              "10 Octopus Recipes",
+              "8 Octopus Recipes",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold
