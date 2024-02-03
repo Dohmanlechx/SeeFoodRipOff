@@ -13,6 +13,7 @@ dependencies:
   image_picker: ^0.8.8
   image: ^4.0.17
   lottie: ^1.0.2
+  flutter_3d_controller: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -27,6 +28,8 @@ flutter:
     - assets/images/
     - assets/models/
     - assets/lottie/
+
+
   fonts:
     - family: Comic Sans
       fonts:
