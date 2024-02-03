@@ -22,7 +22,8 @@ import 'package:see_food/home_screen.dart';
 import 'package:see_food/hotdog_screen.dart';
 import 'package:see_food/not_hotdog_screen.dart';
 import 'package:see_food/object_detection.dart';
-import 'package:see_food/octopus_recipes.dart';
+
+const skipCameraForTesting = false;
 
 void main() => runApp(const MyApp());
 
@@ -78,6 +79,12 @@ class _MyHomeState extends State<MyHome> {
   }
 
   Future<void> handlePhoto() async {
+    if (skipCameraForTesting) {
+      image = Uint8List.fromList([]);
+      setResult(true);
+      return;
+    }
+
     final result = await imagePicker.pickImage(
       source: ImageSource.camera,
     );
@@ -93,8 +100,12 @@ class _MyHomeState extends State<MyHome> {
     await Future.delayed(const Duration(seconds: 2));
     final data = objectDetection!.analyseImage(result.path);
 
+    setResult(data.isHotDog);
+  }
+
+  void setResult(bool isHotDog) {
     setState(() {
-      hotDog = data.isHotDog;
+      hotDog = isHotDog;
       screen = ScreenName.result;
     });
   }
@@ -114,7 +125,6 @@ class _MyHomeState extends State<MyHome> {
               );
             }
             if (screen == ScreenName.evaluating) {
-              print("Evaluating");
               return EvaluatingScreen(
                 image: image,
               );

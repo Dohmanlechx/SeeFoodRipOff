@@ -36,11 +36,11 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
     if (!oldWidget.startAnimation && widget.startAnimation) {
       _translateController = AnimationController(
         vsync: this,
-        duration: const Duration(milliseconds: 1500),
+        duration: const Duration(milliseconds: 1000),
       );
 
       _translateAnimation = Tween<double>(
-        begin: 500.0,
+        begin: 200.0,
         end: 0,
       ).animate(
           CurvedAnimation(parent: _translateController, curve: Curves.linear));
@@ -85,11 +85,10 @@ class _HotdogState extends State<Hotdog> with TickerProviderStateMixin {
     return AnimatedBuilder(
       animation: _translateAnimation,
       builder: (_, __) {
-        print(_translateAnimation.value);
         return Transform.translate(
           offset: Offset(0, _translateAnimation.value),
           child: Opacity(
-            opacity: 1, // widget.startAnimation ? 1 : 0,
+            opacity: widget.startAnimation ? 1 : 0,
             child: Flutter3DViewer(
               src: path,
               controller: widget.controller,
