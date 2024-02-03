@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 
 class NotHotdog extends StatefulWidget {
@@ -15,6 +16,33 @@ class NotHotdog extends StatefulWidget {
 }
 
 class _HotdogState extends State<NotHotdog> with TickerProviderStateMixin {
+  late final Ticker ticker;
+
+  var value = 0.0;
+  var speed = 3.0;
+
+  @override
+  void didUpdateWidget(covariant NotHotdog oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!oldWidget.startAnimation && widget.startAnimation) {
+      ticker = createTicker((_) {
+        widget.controller.setCameraOrbit(
+          value += speed,
+          60,
+          200,
+        );
+      })
+        ..start();
+    }
+  }
+
+  @override
+  void dispose() {
+    ticker.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     const path = 'assets/models/hotdog.glb';

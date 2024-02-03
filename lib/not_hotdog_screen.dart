@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:see_food/not_hotdog.dart';
 
-class NotHotdogScreen extends StatelessWidget {
+class NotHotdogScreen extends StatefulWidget {
   final Uint8List image;
   final VoidCallback onStart;
 
@@ -15,11 +15,30 @@ class NotHotdogScreen extends StatelessWidget {
   });
 
   @override
+  State<NotHotdogScreen> createState() => _NotHotdogScreenState();
+}
+
+class _NotHotdogScreenState extends State<NotHotdogScreen> {
+  final Flutter3DController hotdogController = Flutter3DController();
+
+  var _showHotdog = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      setState(() {
+        _showHotdog = true;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.memory(image, fit: BoxFit.cover),
+          child: Image.memory(widget.image, fit: BoxFit.cover),
         ),
         Positioned(
           bottom: 0,
@@ -32,8 +51,8 @@ class NotHotdogScreen extends StatelessWidget {
         ),
         Positioned.fill(
           child: NotHotdog(
-            Flutter3DController(),
-            startAnimation: false,
+            hotdogController,
+            startAnimation: _showHotdog,
           ),
         ),
         Positioned.fill(
@@ -42,7 +61,7 @@ class NotHotdogScreen extends StatelessWidget {
               foregroundColor: Colors.transparent,
               backgroundColor: Colors.transparent,
             ),
-            onPressed: onStart,
+            onPressed: widget.onStart,
             child: const Text(
               '',
               style: TextStyle(
